@@ -1,0 +1,46 @@
+spring:
+  config:
+    activate:
+      on-profile: default
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/auth_db
+    username: postgres
+    password: postgres
+  jpa:
+      hibernate:
+        ddl-auto: create
+      show-sql: true
+      properties:
+        hibernate:
+          format_sql: true
+      database: postgresql
+  mail:
+    host: localhost
+    port: 1025
+    username: ali
+    password: ali
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+        connection timeout: 5000
+        timeout: 3000
+        write timeout: 5000
+application:
+  security:
+    jwt:
+      secret-key: 4NsXDZsWheo+OGCrEtdsZ/av3Ndj2LDB4SNzFPPkdSg=
+      expiration: 3600
+      refresh-expiration: 604800
+mailing:
+  activation-url: http://localhost:4200/activate-accout
+  email-adress-sender: "contact@gmail.com"
+  activation-token-expiration: 60
+
+#server:
+#  servlet:
+#    context-path: /api/
