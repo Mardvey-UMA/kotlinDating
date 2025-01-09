@@ -103,7 +103,7 @@ class AuthenticationService(
         val newToken = generateAndSaveActivationToken(user)
         emailService.sendEmail(
             to = user.name,
-            username = "dear, ${user.name}",
+            username = user.name,
             emailTemplate = EmailTemplateName.ACTIVATE_ACCOUNT,
             confirmationUrl = emailConfig.activationUrl,
             activationCode = newToken,
