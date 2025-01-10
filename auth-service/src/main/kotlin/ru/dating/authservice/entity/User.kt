@@ -32,6 +32,9 @@ class User(
     @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     private var roles: MutableSet<Role> = mutableSetOf(),
 
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    private var token: MutableSet<Token> = mutableSetOf(),
+
     @Column(nullable = true)
     private var vkId: Long? = null,
 
@@ -67,4 +70,9 @@ class User(
     override fun getUsername(): String = email
 
     override fun getName(): String = email
+
+    fun getTokens(): MutableSet<Token> = token
+    fun setTokens(tokens: MutableSet<Token>) {
+        this.token = tokens
+    }
 }
