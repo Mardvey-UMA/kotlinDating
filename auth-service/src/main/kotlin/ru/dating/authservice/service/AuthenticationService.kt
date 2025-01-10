@@ -144,7 +144,7 @@ class AuthenticationService(
             createdAt = LocalDateTime.now(),
             expiresAt = LocalDateTime.now().plusSeconds(emailConfig.activationTokenExpiration),
             user = user,
-            type = MailTokenType.CONFIRM
+            tokenType = MailTokenType.CONFIRM
         )
         mailTokenRepository.save(mailToken)
         return generatedToken
@@ -183,7 +183,7 @@ class AuthenticationService(
         val token = generateActivationCode()
         val mailToken = MailToken(
             token = token,
-            type = MailTokenType.RECOVERY,
+            tokenType = MailTokenType.RECOVERY,
             createdAt = LocalDateTime.now(),
             expiresAt = LocalDateTime.now().plusSeconds(emailConfig.activationTokenExpiration),
             user = user
