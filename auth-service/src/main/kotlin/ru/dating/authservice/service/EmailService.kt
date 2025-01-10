@@ -12,7 +12,6 @@ import ru.dating.authservice.enums.EmailTemplateName
 
 @Service
 class EmailService(
-
     private val mailSender: JavaMailSender,
     private val templateEngine: SpringTemplateEngine,
     private val emailConfig: EmailConfig

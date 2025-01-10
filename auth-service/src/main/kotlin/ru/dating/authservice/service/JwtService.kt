@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import jakarta.servlet.http.Cookie
-import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import ru.dating.authservice.config.JwtConfig
@@ -34,21 +33,6 @@ class JwtService(private val jwtConfig: JwtConfig) {
             .build()
             .parseSignedClaims(token)
             .payload
-
-    fun generateToken(userDetails: UserDetails): String {
-        val claims = mutableMapOf<String, Any>()
-        return generateToken(claims, userDetails)
-    }
-
-    fun generateToken(
-        claims: Map<String, Any>,
-        userDetails: UserDetails
-    ): String = buildToken(claims, userDetails, jwtConfig.expiration)
-
-    fun generateRefreshToken(
-        userDetails: UserDetails
-    ): String =
-        buildToken(HashMap(), userDetails, jwtConfig.refreshExpiration)
 
     private fun buildToken(
         extraClaims: Map<String, Any>,
@@ -87,5 +71,18 @@ class JwtService(private val jwtConfig: JwtConfig) {
 
     private fun extractExpiration(token: String): Date = extractClaim(token, Claims::getExpiration)
 
+    fun generateAccessToken(user: UserDetails): String {
+        val claims = mapOf("roles" to user.authorities.map { it.authority })
+        return buildToken(claims, user, jwtConfig.expiration)
+    }
 
+    fun generateRefreshToken(user: UserDetails): String {
+        val claims = mapOf("type" to "refresh")
+        return buildToken(claims, user, jwtConfig.refreshExpiration)
+    }
+
+    fun isRefreshTokenValid(token: String): Boolean {
+        val claims = extractAllClaims(token)
+        return claims["type"] == "refresh" && !isTokenExpired(token)
+    }
 }

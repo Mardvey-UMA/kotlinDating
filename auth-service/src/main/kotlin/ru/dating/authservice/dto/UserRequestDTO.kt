@@ -26,7 +26,3 @@ data class UserRequestDTO(
     @field:Size(min = 4, message = "password should be 4 chars long minimum")
     var password: String
 )
-/*
-    Убрал Имя/Фамилию так как при регистрации они ни к чему (имхо)
-    TODO(Добавить подтверждение аккаунта через почту)
-*/

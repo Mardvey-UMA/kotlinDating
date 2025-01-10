@@ -23,5 +23,9 @@ interface TokenRepository : JpaRepository<Token, Long> {
     )
     fun findAllValidTokenByUser (id: Long):Set<Token>
 
+    @Query("SELECT t FROM Token t " +
+            "WHERE t.user.id = :userId AND t.expired = false AND t.revoked = false AND t.tokenType = 'REFRESH'")
+    fun findValidRefreshTokensByUser(userId: Long): Set<Token>
+
     fun findByToken (token: String): Token?
 }

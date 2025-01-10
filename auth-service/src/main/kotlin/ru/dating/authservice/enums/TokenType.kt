@@ -1,5 +1,6 @@
 package ru.dating.authservice.enums
 
 enum class TokenType {
-    BEARER
+    ACCESS,
+    REFRESH,
 }

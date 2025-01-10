@@ -1,27 +1,30 @@
 package ru.dating.authservice.controller
 
-import jakarta.mail.MessagingException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import ru.dating.authservice.dto.*
-import ru.dating.authservice.service.AuthenticationService
+import ru.dating.authservice.service.interfaces.AuthenticationService
 import ru.dating.authservice.service.LogoutService
-import kotlin.jvm.Throws
+import ru.dating.authservice.service.interfaces.PasswordRecoveryService
+import ru.dating.authservice.service.interfaces.RegistrationService
 
 @RestController
 @RequestMapping("/api/auth")
 class AuthController(
-    private val authService: AuthenticationService,
-    private val logoutService: LogoutService
+    private val registrationService: RegistrationService,
+    private val authenticationService: AuthenticationService,
+    private val logoutService: LogoutService,
+    private val passwordRecoveryService: PasswordRecoveryService
 ) {
+
     @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    fun registerUser(@RequestBody @Valid registrationRequest: UserRequestDTO) : ResponseEntity<UserResponseDTO> {
-        val response = authService.register(registrationRequest)
+    fun registerUser(@RequestBody @Valid registrationRequest: UserRequestDTO): ResponseEntity<UserResponseDTO> {
+        val response = registrationService.register(registrationRequest)
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 
@@ -30,7 +33,8 @@ class AuthController(
         @RequestBody @Valid authRequest: AuthRequestDTO,
         response: HttpServletResponse
     ): ResponseEntity<AuthResponseDTO> {
-        return ResponseEntity.ok(authService.authenticate(authRequest, response))
+        val authResponse = authenticationService.authenticate(authRequest, response)
+        return ResponseEntity.ok(authResponse)
     }
 
     @PostMapping("/refresh-token")
@@ -38,24 +42,23 @@ class AuthController(
         @CookieValue("refreshToken") refreshToken: String,
         response: HttpServletResponse
     ): ResponseEntity<AuthResponseDTO> {
-        val newTokens = authService.refreshToken(refreshToken, response)
+        val newTokens = authenticationService.refreshToken(refreshToken, response)
         return ResponseEntity.ok(newTokens)
     }
 
-    @Throws(MessagingException::class)
     @GetMapping("/activate-account")
     fun confirm(
         @RequestParam token: String,
-    ){
-        authService.activateAccount(token)
+    ): ResponseEntity<String> {
+        registrationService.activateAccount(token)
+        return ResponseEntity.ok("Account activated successfully")
     }
 
-    @Throws(MessagingException::class)
     @PostMapping("/password-recovery")
     fun sendPasswordRecoveryEmail(
         @RequestBody request: PasswordRecoveryRequestDTO
     ): ResponseEntity<String> {
-        authService.sendPasswordRecoveryEmail(request.identifier)
+        passwordRecoveryService.initiatePasswordRecovery(request.identifier)
         return ResponseEntity.ok("Password recovery email sent")
     }
 
@@ -63,17 +66,17 @@ class AuthController(
     fun resetPassword(
         @RequestBody @Valid request: PasswordResetRequestDTO
     ): ResponseEntity<String> {
-        authService.resetPassword(request.token, request.newPassword)
+        passwordRecoveryService.resetPassword(request.token, request.newPassword)
         return ResponseEntity.ok("Password has been reset successfully")
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     fun logout(
         request: HttpServletRequest,
-        response: HttpServletResponse
-    ): HttpStatus {
-        logoutService.logout(request, response, null)
-        return HttpStatus.OK
+        response: HttpServletResponse,
+        authentication: Authentication?
+    ): ResponseEntity<String> {
+        logoutService.logout(request, response, authentication)
+        return ResponseEntity.ok("Logged out successfully")
     }
-
 }

@@ -14,7 +14,3 @@ interface UserRepository: JpaRepository<User, Long> {
     @EntityGraph(attributePaths = ["roles"])
     fun findByVkId(vkId: Long): User?
 }
-/*
-    @EntityGraph(attributePaths = ["roles"]) - подгружает роли пользователя
-    сразу при вызове метода, также от N + 1
- */

@@ -2,6 +2,7 @@ package ru.dating.authservice.entity
 
 import jakarta.persistence.*
 import ru.dating.authservice.enums.TokenType
+import java.time.LocalDateTime
 
 @Entity
 class Token (
@@ -13,11 +14,13 @@ class Token (
     private var token: String,
 
     @Enumerated(EnumType.STRING)
-    var tokenType: TokenType = TokenType.BEARER,
+    var tokenType: TokenType = TokenType.REFRESH,
 
     var revoked: Boolean,
 
     var expired: Boolean,
+
+    var created: LocalDateTime = LocalDateTime.now(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

@@ -19,8 +19,7 @@ class User(
     @GeneratedValue(strategy = GenerationType.IDENTITY) // IDENTITY - По мере заполнения просто инкремент id
     var id: Long? = null,
 
-    @Column(nullable = false, unique = true)
-    private var email: String,
+    @Column(nullable = false, unique = true) var email: String,
 
     @Column(nullable = false, unique = true)
     private var username: String,
@@ -29,8 +28,7 @@ class User(
     private var password: String,
 
     // Используется LAZY чтобы не было N + 1
-    @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    private var roles: MutableSet<Role> = mutableSetOf(),
+    @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL]) var roles: MutableSet<Role> = mutableSetOf(),
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     private var token: MutableSet<Token> = mutableSetOf(),
@@ -38,8 +36,7 @@ class User(
     @Column(nullable = true)
     private var vkId: Long? = null,
 
-    @Column(nullable = false)
-    private var provider: Provider,
+    @Column(nullable = false) var provider: Provider,
 
     @Column(nullable = false) var enabled: Boolean,
 

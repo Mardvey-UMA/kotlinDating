@@ -15,7 +15,31 @@ import ru.dating.authservice.enums.BusinessErrorCodes
 class GlobalExceptionHandler {
 
     class UserAlreadyExistsException(message: String) : RuntimeException(message)
+    class InvalidTokenException(message: String) : RuntimeException(message)
+    class UserNotFoundException(message: String) : RuntimeException(message)
 
+    @ExceptionHandler(InvalidTokenException::class)
+    fun handleInvalidTokenException(exp: InvalidTokenException): ResponseEntity<ExceptionResponse> =
+        ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(
+                ExceptionResponse(
+                    businessErrorCode = BusinessErrorCodes.INVALID_TOKEN.code,
+                    businessErrorDescription = BusinessErrorCodes.INVALID_TOKEN.description,
+                    error = exp.message
+                )
+            )
+
+    @ExceptionHandler(UserNotFoundException::class)
+    fun handleUserNotFoundException(exp: UserNotFoundException): ResponseEntity<ExceptionResponse> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(
+                ExceptionResponse(
+                    businessErrorCode = BusinessErrorCodes.USER_NOT_FOUND.code,
+                    businessErrorDescription = BusinessErrorCodes.USER_NOT_FOUND.description,
+                    error = exp.message
+                )
+            )
+    
     @ExceptionHandler(UserAlreadyExistsException::class)
     fun handleException (exp: UserAlreadyExistsException): ResponseEntity<ExceptionResponse> =
         ResponseEntity.status(HttpStatus.BAD_REQUEST)
