@@ -1,11 +1,8 @@
 package ru.dating.authservice.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.mail.MessagingException
-import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -19,11 +16,8 @@ import ru.dating.authservice.dto.UserRequestDTO
 import ru.dating.authservice.dto.UserResponseDTO
 import ru.dating.authservice.entity.MailToken
 import ru.dating.authservice.entity.Token
-import ru.dating.authservice.enums.UserRole
 import ru.dating.authservice.entity.User
-import ru.dating.authservice.enums.EmailTemplateName
-import ru.dating.authservice.enums.Provider
-import ru.dating.authservice.enums.TokenType
+import ru.dating.authservice.enums.*
 import ru.dating.authservice.exception.GlobalExceptionHandler
 import ru.dating.authservice.repository.RoleRepository
 import ru.dating.authservice.repository.MailTokenRepository
@@ -132,13 +126,25 @@ class AuthenticationService(
         )
     }
     private fun generateAndSaveActivationToken(user: User): String {
-        //generate token
+
+        // Деактивация всех существующих enabled true токенов пользователя по его id
+        val activeTokens = user.id?.let {
+            mailTokenRepository.findByUserIdAndEnabledAndTokenType(
+                userId = it,
+                enabled = true,
+                tokenType = MailTokenType.CONFIRM
+            )
+        }
+        activeTokens?.forEach { it.enabled = false }
+        activeTokens?.let { mailTokenRepository.saveAll(it) }
+
         val generatedToken = generateActivationCode()
         val mailToken: MailToken = MailToken(
             token = generatedToken,
             createdAt = LocalDateTime.now(),
             expiresAt = LocalDateTime.now().plusSeconds(emailConfig.activationTokenExpiration),
-            user = user
+            user = user,
+            type = MailTokenType.CONFIRM
         )
         mailTokenRepository.save(mailToken)
         return generatedToken
@@ -152,6 +158,15 @@ class AuthenticationService(
             userRepository.findByUsername(identifier)
                 ?: throw UsernameNotFoundException("User with username $identifier not found")
         }
+        val activeTokens = user.id?.let {
+            mailTokenRepository.findByUserIdAndEnabledAndTokenType(
+                userId = it,
+                enabled = true,
+                tokenType = MailTokenType.RECOVERY
+            )
+        }
+        activeTokens?.forEach { it.enabled = false }
+        activeTokens?.let { mailTokenRepository.saveAll(it) }
 
         val recoveryToken = generateAndSaveRecoveryToken(user)
         emailService.sendEmail(
@@ -168,6 +183,7 @@ class AuthenticationService(
         val token = generateActivationCode()
         val mailToken = MailToken(
             token = token,
+            type = MailTokenType.RECOVERY,
             createdAt = LocalDateTime.now(),
             expiresAt = LocalDateTime.now().plusSeconds(emailConfig.activationTokenExpiration),
             user = user
@@ -175,7 +191,6 @@ class AuthenticationService(
         mailTokenRepository.save(mailToken)
         return token
     }
-
 
     private fun generateActivationCode(length: Int = 6): String {
         val secureRandom = SecureRandom()
@@ -190,10 +205,11 @@ class AuthenticationService(
     fun activateAccount(token: String) {
         val savedMailToken: MailToken = mailTokenRepository.findByToken(token)
             ?: throw UsernameNotFoundException("Invalid token")
-        if (LocalDateTime.now().isAfter(savedMailToken.expiresAt)){
+        if (LocalDateTime.now().isAfter(savedMailToken.expiresAt) || !savedMailToken.enabled) {
             sendValidationEmail(savedMailToken.user)
             throw UsernameNotFoundException("Activation token expired, new token send!!")
         }
+
         val user = userRepository.findByEmail(savedMailToken.user.name)
             ?: throw UsernameNotFoundException("User ${savedMailToken.user.name} not found")
         user.enabled = true
@@ -201,12 +217,13 @@ class AuthenticationService(
         savedMailToken.validatedAt = LocalDateTime.now()
         mailTokenRepository.save(savedMailToken)
     }
+
     @Throws(MessagingException::class)
     fun resetPassword(token: String, newPassword: String) {
         val mailToken = mailTokenRepository.findByToken(token)
             ?: throw UsernameNotFoundException("Invalid token")
 
-        if (LocalDateTime.now().isAfter(mailToken.expiresAt)) {
+        if (LocalDateTime.now().isAfter(mailToken.expiresAt) || !mailToken.enabled) {
             throw IllegalStateException("Token has expired")
         }
 

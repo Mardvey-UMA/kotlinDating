@@ -36,6 +36,26 @@ application:
       secret-key: 4NsXDZsWheo+OGCrEtdsZ/av3Ndj2LDB4SNzFPPkdSg=
       expiration: 3600
       refresh-expiration: 604800
+    oauth2:
+      client:
+        registration:
+          vk:
+            clientName: vk
+            clientId: 52691997
+            clientSecret: CzlOW0XkMynQwqMzpjQH
+            redirect-uri: http://localhost/api/auth/login/oauth2/code/vk
+            authorizationGrantType: authorization_code
+            clientAuthenticationMethod: client_secret_post
+            scope:
+              - email
+              - profile
+            provider: vk
+        provider:
+          vk:
+            authorizationUri: https://oauth.vk.com/authorize?v=199
+            tokenUri: https://oauth.vk.com/access_token
+            userInfoUri: https://api.vk.com/method/users.get?v=199
+            userNameAttribute: response
 mailing:
   activation-url: http://localhost:4200/activate-accout
   email-address-sender: "contact@gmail.com"

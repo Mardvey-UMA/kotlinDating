@@ -11,12 +11,9 @@ import org.springframework.validation.annotation.Validated
 @Validated
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class AuthRequestDTO(
-    @field:NotEmpty(message = "username cannot be empty")
-    @field:NotBlank(message = "username cannot has blank")
+
     var username: String? = null,
 
-    @field:NotEmpty(message = "email cannot be empty")
-    @field:NotBlank(message = "email cannot has blank")
     @field:Email(message = "email is not formatted")
     var email: String? = null,
 

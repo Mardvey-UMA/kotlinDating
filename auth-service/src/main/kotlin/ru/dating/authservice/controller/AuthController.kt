@@ -32,7 +32,7 @@ class AuthController(
     ): ResponseEntity<AuthResponseDTO> {
         return ResponseEntity.ok(authService.authenticate(authRequest, response))
     }
-    
+
     @PostMapping("/refresh-token")
     fun refreshToken(
         @CookieValue("refreshToken") refreshToken: String,
@@ -52,9 +52,11 @@ class AuthController(
 
     @Throws(MessagingException::class)
     @PostMapping("/password-recovery")
-    fun sendPasswordRecoveryEmail(@RequestParam identifier: String): ResponseEntity<String> {
-        authService.sendPasswordRecoveryEmail(identifier)
-        return ResponseEntity.ok("Pass recovery email send")
+    fun sendPasswordRecoveryEmail(
+        @RequestBody request: PasswordRecoveryRequestDTO
+    ): ResponseEntity<String> {
+        authService.sendPasswordRecoveryEmail(request.identifier)
+        return ResponseEntity.ok("Password recovery email sent")
     }
 
     @PostMapping("/reset-password")
