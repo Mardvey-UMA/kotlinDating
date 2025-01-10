@@ -71,8 +71,7 @@ class User(
 
     override fun getName(): String = email
 
-    fun getTokens(): MutableSet<Token> = token
-    fun setTokens(tokens: MutableSet<Token>) {
-        this.token = tokens
+    fun setPassword(newPassword: String) {
+        this.password = newPassword
     }
 }

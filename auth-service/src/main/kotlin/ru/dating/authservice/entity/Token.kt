@@ -7,7 +7,7 @@ import ru.dating.authservice.enums.TokenType
 class Token (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private var id : Long,
+    private var id : Long? = null,
 
     @Column(unique = true)
     private var token: String,

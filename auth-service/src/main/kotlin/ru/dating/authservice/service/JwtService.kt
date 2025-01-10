@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import ru.dating.authservice.config.JwtConfig
@@ -43,6 +45,11 @@ class JwtService(private val jwtConfig: JwtConfig) {
         userDetails: UserDetails
     ): String = buildToken(claims, userDetails, jwtConfig.expiration)
 
+    fun generateRefreshToken(
+        userDetails: UserDetails
+    ): String =
+        buildToken(HashMap(), userDetails, jwtConfig.refreshExpiration)
+
     private fun buildToken(
         extraClaims: Map<String, Any>,
         userDetails: UserDetails,
@@ -68,8 +75,12 @@ class JwtService(private val jwtConfig: JwtConfig) {
                 !isTokenExpired(token)
     }
 
-    fun generateRefreshToken(userDetails: UserDetails): String {
-        return buildToken(emptyMap(), userDetails, jwtConfig.refreshExpiration)
+    fun createHttpOnlyCookie(name: String, value: String): Cookie {
+        val cookie = Cookie(name, value)
+        cookie.isHttpOnly = true
+        cookie.maxAge = jwtConfig.expiration.toInt()
+        cookie.path = "/"
+        return cookie
     }
 
     private fun isTokenExpired(token: String): Boolean = extractExpiration(token).before(Date.from(Instant.now()))

@@ -6,22 +6,24 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Size
+import org.springframework.validation.annotation.Validated
 
+@Validated
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class UserRequestDTO(
 
-    @NotEmpty(message = "username cannot be empty")
-    @NotBlank(message = "username cannot has blank")
+    @field:NotEmpty(message = "username cannot be empty")
+    @field:NotBlank(message = "username cannot has blank")
     var username: String,
 
-    @Email(message = "email is not formatted")
-    @NotEmpty(message = "email cannot be empty")
-    @NotBlank(message = "email cannot has blank")
+    @field:Email(message = "email is not formatted")
+    @field:NotEmpty(message = "email cannot be empty")
+    @field:NotBlank(message = "email cannot has blank")
     var email: String,
 
-    @NotEmpty(message = "password cannot be empty")
-    @NotBlank(message = "password cannot has blank")
-    @Size(min = 4, message = "password should be 4 chars long minimum")
+    @field:NotEmpty(message = "password cannot be empty")
+    @field:NotBlank(message = "password cannot has blank")
+    @field:Size(min = 4, message = "password should be 4 chars long minimum")
     var password: String
 )
 /*

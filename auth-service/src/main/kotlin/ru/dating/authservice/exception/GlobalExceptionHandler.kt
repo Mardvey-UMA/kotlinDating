@@ -14,6 +14,19 @@ import ru.dating.authservice.enums.BusinessErrorCodes
 @RestControllerAdvice
 class GlobalExceptionHandler {
 
+    class UserAlreadyExistsException(message: String) : RuntimeException(message)
+
+    @ExceptionHandler(UserAlreadyExistsException::class)
+    fun handleException (exp: UserAlreadyExistsException): ResponseEntity<ExceptionResponse> =
+        ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(
+                ExceptionResponse(
+                    businessErrorCode = BusinessErrorCodes.USER_ALREADY_EXISTS.code,
+                    businessErrorDescription = BusinessErrorCodes.USER_ALREADY_EXISTS.description,
+                    error = "User with this email / username already exists"
+                )
+            )
+
     @ExceptionHandler(LockedException::class)
     fun handleException (exp: LockedException): ResponseEntity<ExceptionResponse> =
         ResponseEntity.status(HttpStatus.UNAUTHORIZED)

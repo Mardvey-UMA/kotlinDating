@@ -1,21 +1,22 @@
 package ru.dating.authservice.controller
 
 import jakarta.mail.MessagingException
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import ru.dating.authservice.dto.AuthRequestDTO
-import ru.dating.authservice.dto.AuthResponseDTO
-import ru.dating.authservice.dto.UserRequestDTO
-import ru.dating.authservice.dto.UserResponseDTO
+import ru.dating.authservice.dto.*
 import ru.dating.authservice.service.AuthenticationService
+import ru.dating.authservice.service.LogoutService
 import kotlin.jvm.Throws
 
 @RestController
 @RequestMapping("/api/auth")
 class AuthController(
-    private val authService: AuthenticationService
+    private val authService: AuthenticationService,
+    private val logoutService: LogoutService
 ) {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -23,9 +24,22 @@ class AuthController(
         val response = authService.register(registrationRequest)
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
+
     @PostMapping("/authenticate")
-    fun authenticateUser(@RequestBody @Valid authRequest: AuthRequestDTO) : ResponseEntity<AuthResponseDTO> {
-        return ResponseEntity.ok(authService.authenticate(authRequest))
+    fun authenticateUser(
+        @RequestBody @Valid authRequest: AuthRequestDTO,
+        response: HttpServletResponse
+    ): ResponseEntity<AuthResponseDTO> {
+        return ResponseEntity.ok(authService.authenticate(authRequest, response))
+    }
+    
+    @PostMapping("/refresh-token")
+    fun refreshToken(
+        @CookieValue("refreshToken") refreshToken: String,
+        response: HttpServletResponse
+    ): ResponseEntity<AuthResponseDTO> {
+        val newTokens = authService.refreshToken(refreshToken, response)
+        return ResponseEntity.ok(newTokens)
     }
 
     @Throws(MessagingException::class)
@@ -34,6 +48,30 @@ class AuthController(
         @RequestParam token: String,
     ){
         authService.activateAccount(token)
+    }
+
+    @Throws(MessagingException::class)
+    @PostMapping("/password-recovery")
+    fun sendPasswordRecoveryEmail(@RequestParam identifier: String): ResponseEntity<String> {
+        authService.sendPasswordRecoveryEmail(identifier)
+        return ResponseEntity.ok("Pass recovery email send")
+    }
+
+    @PostMapping("/reset-password")
+    fun resetPassword(
+        @RequestBody @Valid request: PasswordResetRequestDTO
+    ): ResponseEntity<String> {
+        authService.resetPassword(request.token, request.newPassword)
+        return ResponseEntity.ok("Password has been reset successfully")
+    }
+
+    @GetMapping("/logout")
+    fun logout(
+        request: HttpServletRequest,
+        response: HttpServletResponse
+    ): HttpStatus {
+        logoutService.logout(request, response, null)
+        return HttpStatus.OK
     }
 
 }

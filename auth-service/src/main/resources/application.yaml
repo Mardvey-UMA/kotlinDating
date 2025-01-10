@@ -38,9 +38,5 @@ application:
       refresh-expiration: 604800
 mailing:
   activation-url: http://localhost:4200/activate-accout
-  email-adress-sender: "contact@gmail.com"
-  activation-token-expiration: 60
-
-#server:
-#  servlet:
-#    context-path: /api/
+  email-address-sender: "contact@gmail.com"
+  activation-token-expiration: 3600

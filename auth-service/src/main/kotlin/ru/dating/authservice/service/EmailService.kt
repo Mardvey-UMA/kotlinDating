@@ -37,7 +37,7 @@ class EmailService(
         val context = Context() // ThymeLeaf Context
         context.setVariables(properties)
 
-        helper.setFrom(emailConfig.emailAdressSender)
+        helper.setFrom(emailConfig.emailAddressSender)
         helper.setTo(to)
         helper.setSubject(subject)
 

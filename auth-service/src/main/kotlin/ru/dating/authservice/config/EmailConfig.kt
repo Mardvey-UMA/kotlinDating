@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component
 @ConfigurationProperties(prefix = "mailing")
 class EmailConfig {
     lateinit var activationUrl: String
-    lateinit var emailAdressSender: String
+    lateinit var emailAddressSender: String
     var activationTokenExpiration: Long = 60
 }
