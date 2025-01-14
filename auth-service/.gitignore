@@ -1,6 +1,6 @@
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
+#.gradle
+#build/
+#!gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
@@ -68,5 +68,5 @@ gradle/wrapper/
 *.ear
 
 # Исключить файлы Gradle
-gradlew
-gradlew.bat
+#gradlew
+#gradlew.bat

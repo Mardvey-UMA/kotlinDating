@@ -20,11 +20,10 @@ class VkController (
     fun handleRedirect(
         @RequestParam("code") code: String,
         response: HttpServletResponse
-    ): ResponseEntity<AuthResponseDTO> {
-        val authResponse = oAuthService.authenticate(code, response)
-        return ResponseEntity.ok(authResponse)
+    ): AuthResponseDTO {
+        //val authResponse =
+        return oAuthService.authenticate(code, response)
     }
-
     @GetMapping("/oauth2/vk")
     fun oauth2(
         @RegisteredOAuth2AuthorizedClient("vk") authorizedClient: OAuth2AuthorizedClient

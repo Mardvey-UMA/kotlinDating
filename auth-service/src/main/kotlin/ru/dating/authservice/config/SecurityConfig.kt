@@ -29,12 +29,20 @@ class SecurityConfig(
             .authorizeHttpRequests { requests ->
                 requests
                     .requestMatchers(
-                        "/api/auth/**")
+                        "/api/auth/**",
+                        "/login/oauth2/**",
+                        "/login/**")
                     .permitAll()
                     .anyRequest().authenticated()
             }
             .oauth2Login { oauth2 ->
                 oauth2
+                    .authorizationEndpoint { endpoint ->
+                        endpoint.baseUri("/api/auth/oauth2/vk")
+                    }
+                    .redirectionEndpoint { endpoint ->
+                        endpoint.baseUri("/api/auth/login/oauth2/code/*")
+                    }
                     .defaultSuccessUrl("/api/auth/login/oauth2/code/vk", true)
             }
             .authenticationProvider(authenticationProvider)
