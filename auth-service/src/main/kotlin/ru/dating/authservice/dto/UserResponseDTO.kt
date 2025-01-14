@@ -12,7 +12,7 @@ data class UserResponseDTO(
     var role: MutableSet<Role>, // Тут поменять
     var provider: Provider,
     var enabled: Boolean,
-    var vkId: String? = null,
+    var vkId: Long? = null,
     var createdAt: LocalDateTime,
     var updatedAt: LocalDateTime? = null,
     )

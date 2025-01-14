@@ -33,6 +33,10 @@ class SecurityConfig(
                     .permitAll()
                     .anyRequest().authenticated()
             }
+            .oauth2Login { oauth2 ->
+                oauth2
+                    .defaultSuccessUrl("/api/auth/login/oauth2/code/vk", true)
+            }
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()

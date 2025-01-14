@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import ru.dating.authservice.config.JwtConfig
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 import javax.crypto.SecretKey
 
@@ -69,7 +71,7 @@ class JwtService(private val jwtConfig: JwtConfig) {
 
     private fun isTokenExpired(token: String): Boolean = extractExpiration(token).before(Date.from(Instant.now()))
 
-    private fun extractExpiration(token: String): Date = extractClaim(token, Claims::getExpiration)
+    fun extractExpiration(token: String): Date = extractClaim(token, Claims::getExpiration)
 
     fun generateAccessToken(user: UserDetails): String {
         val claims = mapOf("roles" to user.authorities.map { it.authority })
@@ -80,9 +82,34 @@ class JwtService(private val jwtConfig: JwtConfig) {
         val claims = mapOf("type" to "refresh")
         return buildToken(claims, user, jwtConfig.refreshExpiration)
     }
-
     fun isRefreshTokenValid(token: String): Boolean {
         val claims = extractAllClaims(token)
         return claims["type"] == "refresh" && !isTokenExpired(token)
     }
+
+/////////////////////////////////////////////
+    fun extractIssuedAt(token: String): LocalDateTime? {
+        return try {
+            val claims = extractAllClaims(token)
+            claims.issuedAt.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime()
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun extractExpirationLocalDateTime(token: String): LocalDateTime? {
+        return try {
+            val expirationDate = extractExpiration(token)
+            expirationDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime()
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+
+
 }

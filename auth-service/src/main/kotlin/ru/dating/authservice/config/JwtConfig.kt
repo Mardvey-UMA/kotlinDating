@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 
 @Component
-@ConfigurationProperties(prefix = "application.security.jwt")
+@ConfigurationProperties(prefix = "spring.security.jwt")
 class JwtConfig {
     lateinit var secretKey: String
     var expiration: Long = 0

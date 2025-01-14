@@ -1,4 +1,16 @@
 services:
+  authservice:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    networks:
+      - dating-network
+    restart: always
+    user: root
   postgres:
     container_name: auth_db
     image: postgres

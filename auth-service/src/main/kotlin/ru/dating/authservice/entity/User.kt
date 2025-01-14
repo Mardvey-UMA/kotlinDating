@@ -33,8 +33,7 @@ class User(
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     private var token: MutableSet<Token> = mutableSetOf(),
 
-    @Column(nullable = true)
-    private var vkId: Long? = null,
+    @Column(nullable = true) var vkId: Long? = null,
 
     @Column(nullable = false) var provider: Provider,
 
