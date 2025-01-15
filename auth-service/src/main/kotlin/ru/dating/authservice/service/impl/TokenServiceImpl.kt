@@ -18,7 +18,6 @@ import java.time.LocalDateTime
 @Service
 class TokenServiceImpl(
     private val tokenRepository: TokenRepository,
-    private val tokenService: TokenService,
     private val userService: UserService,
     private val jwtService: JwtService,
     private val jwtConfig: JwtConfig,
@@ -67,9 +66,9 @@ class TokenServiceImpl(
         val user: User = userService.findByEmail(userEmail)
             ?: throw GlobalExceptionHandler.InvalidTokenException("User not found")
 
-        tokenService.revokeRefreshToken(refreshToken)
+        revokeRefreshToken(refreshToken)
         val newRefreshToken: String = jwtService.generateRefreshToken(user)
-        tokenService.saveRefreshToken(user, newRefreshToken)
+        saveRefreshToken(user, newRefreshToken)
 
         val newAccessToken: String = jwtService.generateAccessToken(user)
 
