@@ -31,8 +31,4 @@ class RegistrationServiceImpl(
             createdAt = LocalDateTime.now()
         )
     }
-
-    override fun activateAccount(token: String) {
-        activationService.activateAccount(token)
-    }
 }

@@ -16,7 +16,8 @@ import ru.dating.authservice.security.JwtFilter
 @EnableMethodSecurity(securedEnabled = true)
 class SecurityConfig(
     private val jwtAuthFilter: JwtFilter,
-    private val authenticationProvider: AuthenticationProvider
+    private val authenticationProvider: AuthenticationProvider,
+    private val publicRoutesConfig: PublicRoutesConfig
 ) {
     @Bean
     @Throws(Exception::class)
@@ -26,24 +27,12 @@ class SecurityConfig(
             .sessionManagement { session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
-            .authorizeHttpRequests { requests ->
-                requests
-                    .requestMatchers(
-                        "/api/auth/**",
-                        "/login/oauth2/**",
-                        "/login/**")
-                    .permitAll()
-                    .anyRequest().authenticated()
-            }
-            .oauth2Login { oauth2 ->
-                oauth2
-                    .authorizationEndpoint { endpoint ->
-                        endpoint.baseUri("/api/auth/oauth2/vk")
-                    }
-                    .redirectionEndpoint { endpoint ->
-                        endpoint.baseUri("/api/auth/login/oauth2/code/*")
-                    }
-                    .defaultSuccessUrl("/api/auth/login/oauth2/code/vk", true)
+            .authorizeHttpRequests { authorize ->
+                publicRoutesConfig.publicUrls.forEach { url ->
+                    authorize.requestMatchers(url).permitAll()
+                }
+
+                authorize.anyRequest().authenticated()
             }
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)

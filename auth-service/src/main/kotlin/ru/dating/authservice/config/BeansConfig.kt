@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 class BeansConfig (
     val userDetailsService: UserDetailsService
 ){
+
     @Bean
     fun authenticationProvider(): AuthenticationProvider{
         val authProvider = DaoAuthenticationProvider()

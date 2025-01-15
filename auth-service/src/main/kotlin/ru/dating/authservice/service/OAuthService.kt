@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.http.ResponseEntity
 import org.springframework.http.HttpMethod
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.http.HttpStatus
 
 import ru.dating.authservice.config.VkApiConfig
 import ru.dating.authservice.dto.AuthResponseDTO
@@ -134,5 +135,16 @@ class OAuthService(
             ),
             vkId
         )
+    }
+    fun vkLoginPageOpen(): ResponseEntity<String> {
+        val uri = URI.create(
+            "${vkApiConfig.provider.vk.authorizationUri}?" +
+                    "client_id=${vkApiConfig.registration.vk.clientId}" +
+                    "&client_secret=${vkApiConfig.registration.vk.clientSecret}" +
+                    "&redirect_uri=${vkApiConfig.registration.vk.redirectUri}"
+        )
+        return ResponseEntity.status(HttpStatus.FOUND)
+            .location(uri)
+            .build()
     }
 }

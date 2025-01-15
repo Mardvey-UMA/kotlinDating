@@ -2,9 +2,24 @@ server:
   port: 80
 
 spring:
-  config:
-    activate:
-      on-profile: default
+  public-urls:
+    - "/api/auth/**"
+    - "/api/password/**"
+    - "/api/activate-account"
+    - "/v3/api-docs/**"
+    - "/swagger-ui.html"
+    - "/swagger-ui/**"
+    - "/swagger-resources/**"
+    - "/webjars/**"
+    - "/v2/api-docs"
+    - "/v2/api-docs/**"
+    - "/swagger-ui.html"
+    - "/webjars/swagger-ui/**"
+    - "/v3/api-docs/**"
+    - "/swagger-resources/**"
+    - "/v3/api-docs"
+    - "/swagger-ui/index.html"
+    - "/swagger-ui/**"
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/auth_db
@@ -54,12 +69,12 @@ spring:
             provider: vk
         provider:
           vk:
-            authorization-uri: https://oauth.vk.com/authorize?v=199
+            authorization-uri: https://oauth.vk.com/authorize
             token-uri: https://oauth.vk.com/access_token
             user-info-uri: https://api.vk.com/method/users.get?v=199
             user-name-attribute: response
+
 mailing:
   activation-url: http://localhost:4200/activate-accout
   email-address-sender: "contact@gmail.com"
   activation-token-expiration: 3600
-

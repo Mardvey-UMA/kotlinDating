@@ -1,4 +1,15 @@
 services:
+  frontend:
+    build:
+      context: ../frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - authservice
+    networks:
+      - dating-network
+    restart: always
+    user: root
   authservice:
     build: .
     ports:
