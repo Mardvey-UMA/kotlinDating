@@ -9,6 +9,7 @@ import ru.dating.authservice.dto.AuthRequestDTO
 import ru.dating.authservice.dto.AuthResponseDTO
 import ru.dating.authservice.entity.User
 import ru.dating.authservice.config.JwtConfig
+import ru.dating.authservice.enums.CookieName
 import ru.dating.authservice.exception.GlobalExceptionHandler
 import ru.dating.authservice.service.interfaces.AuthenticationService
 import ru.dating.authservice.service.JwtService
@@ -55,11 +56,8 @@ class AuthenticationServiceImpl(
         val accessToken: String = jwtService.generateAccessToken(user)
         val refreshToken: String = jwtService.generateRefreshToken(user)
 
-        /*
-        TODO(Вместо магических строк сделать константы для access и resfresh token
-        */
-        response.addCookie(jwtService.createHttpOnlyCookie("accessToken", accessToken))
-        response.addCookie(jwtService.createHttpOnlyCookie("refreshToken", refreshToken))
+        response.addCookie(jwtService.createHttpOnlyCookie(CookieName.ACCESS_TOKEN.name, accessToken))
+        response.addCookie(jwtService.createHttpOnlyCookie(CookieName.REFRESH_TOKEN.name, refreshToken))
 
         tokenService.saveRefreshToken(user, refreshToken)
 
@@ -68,38 +66,6 @@ class AuthenticationServiceImpl(
             issuedAt = LocalDateTime.now(),
             accessExpiresAt = LocalDateTime.now().plusSeconds(jwtConfig.expiration),
             refreshToken = refreshToken,
-            refreshExpiresAt = LocalDateTime.now().plusSeconds(jwtConfig.refreshExpiration)
-        )
-    }
-
-    override fun refreshToken(refreshToken: String, response: HttpServletResponse): AuthResponseDTO {
-        if (!jwtService.isRefreshTokenValid(refreshToken)) {
-            throw GlobalExceptionHandler.InvalidTokenException("Invalid or expired refresh token")
-        }
-
-        val userEmail: String = jwtService.extractUsername(refreshToken)
-            ?: throw GlobalExceptionHandler.InvalidTokenException("Invalid refresh token")
-
-        val user: User = userService.findByEmail(userEmail)
-            ?: throw GlobalExceptionHandler.InvalidTokenException("User not found")
-
-        tokenService.revokeRefreshToken(refreshToken)
-        val newRefreshToken: String = jwtService.generateRefreshToken(user)
-        tokenService.saveRefreshToken(user, newRefreshToken)
-
-        val newAccessToken: String = jwtService.generateAccessToken(user)
-
-        /*
-        TODO(Вместо магических строк сделать константы для access и resfresh token
-         */
-        response.addCookie(jwtService.createHttpOnlyCookie("accessToken", newAccessToken))
-        response.addCookie(jwtService.createHttpOnlyCookie("refreshToken", newRefreshToken))
-
-        return AuthResponseDTO(
-            accessToken = newAccessToken,
-            issuedAt = LocalDateTime.now(),
-            accessExpiresAt = LocalDateTime.now().plusSeconds(jwtConfig.expiration),
-            refreshToken = newRefreshToken,
             refreshExpiresAt = LocalDateTime.now().plusSeconds(jwtConfig.refreshExpiration)
         )
     }

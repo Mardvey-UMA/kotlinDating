@@ -1,5 +1,6 @@
 package ru.dating.authservice.controller
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -9,12 +10,18 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import ru.dating.authservice.service.LogoutService
-@Tag(name = "User3")
+@Tag(
+    name = "Выход пользователя",
+    description = "Обработка выхода пользователя")
 @RequestMapping("/api/logout")
 @RestController
 class LogoutController(
     private val logoutService: LogoutService
 ) {
+    @Operation(
+        summary = "Выход авторизированного пользователя",
+        description = "Выход пользователя, с invoke его refresh токена и удалением cookie"
+    )
     @PostMapping()
     fun logout(
         request: HttpServletRequest,

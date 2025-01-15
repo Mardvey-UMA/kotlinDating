@@ -6,5 +6,4 @@ import ru.dating.authservice.dto.AuthResponseDTO
 
 interface AuthenticationService {
     fun authenticate(request: AuthRequestDTO, response: HttpServletResponse): AuthResponseDTO
-    fun refreshToken(refreshToken: String, response: HttpServletResponse): AuthResponseDTO
 }

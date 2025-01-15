@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.logout.LogoutHandler
 import org.springframework.stereotype.Service
+import ru.dating.authservice.enums.CookieName
 import ru.dating.authservice.repository.TokenRepository
 
 @Service
@@ -19,7 +20,7 @@ class LogoutService(
         response: HttpServletResponse,
         authentication: Authentication?
     ) {
-        val refreshToken = getCookieValue(request, REFRESH_TOKEN_COOKIE_NAME)
+        val refreshToken = getCookieValue(request, CookieName.REFRESH_TOKEN.name)
 
         if (refreshToken != null) {
             val storedToken = tokenRepository.findByToken(refreshToken)
@@ -32,9 +33,9 @@ class LogoutService(
 
         SecurityContextHolder.clearContext()
 
-        clearCookie(response, REFRESH_TOKEN_COOKIE_NAME)
+        clearCookie(response, CookieName.REFRESH_TOKEN.name)
 
-        clearCookie(response, ACCESS_TOKEN_COOKIE_NAME)
+        clearCookie(response, CookieName.ACCESS_TOKEN.name)
     }
 
     private fun getCookieValue(request: HttpServletRequest, name: String): String? {
@@ -48,12 +49,5 @@ class LogoutService(
             isHttpOnly = true
         }
         response.addCookie(cookie)
-    }
-    /*
-    TODO(Вынести в ENUM названия
-     */
-    companion object {
-        const val REFRESH_TOKEN_COOKIE_NAME = "refreshToken"
-        const val ACCESS_TOKEN_COOKIE_NAME = "accessToken"
     }
 }

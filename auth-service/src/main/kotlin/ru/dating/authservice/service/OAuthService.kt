@@ -13,6 +13,7 @@ import ru.dating.authservice.config.VkApiConfig
 import ru.dating.authservice.dto.AuthResponseDTO
 import ru.dating.authservice.dto.UserRequestDTO
 import ru.dating.authservice.entity.User
+import ru.dating.authservice.enums.CookieName
 import ru.dating.authservice.enums.Provider
 
 import ru.dating.authservice.repository.UserRepository
@@ -55,8 +56,8 @@ class OAuthService(
         TODO(Вместо магических строк сделать константы для access и resfresh token
         */
         // Кидаем в кукисы
-        response.addCookie(jwtService.createHttpOnlyCookie("accessToken", accessToken))
-        response.addCookie(jwtService.createHttpOnlyCookie("refreshToken", refreshToken))
+        response.addCookie(jwtService.createHttpOnlyCookie(CookieName.ACCESS_TOKEN.name, accessToken))
+        response.addCookie(jwtService.createHttpOnlyCookie(CookieName.REFRESH_TOKEN.name, refreshToken))
 
         // Пишем рефрешку
         tokenService.saveRefreshToken(user, refreshToken)
