@@ -84,5 +84,5 @@ eureka:
 
 mailing:
   activation-url: http://localhost:4200/activate-accout
-  email-address-sender: "contact@gmail.com"
+  email-address-sender: "doedcompany@gmail.com"
   activation-token-expiration: 3600
