@@ -21,7 +21,7 @@ spring:
     - "/swagger-ui/index.html"
   datasource:
     driver-class-name: org.postgresql.Driver
-    #url: jdbc:postgresql://auth_db/auth_db
+    #url: jdbc:postgresql://localhost:5432/auth_db
     url: jdbc:postgresql://auth_db/auth_db
     username: postgres
     password: postgres
@@ -37,7 +37,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: "doedcompany@gmail.com"
-    password: "{}"
+    password: "23230323kotlin"
     properties:
       mail:
         smtp:
