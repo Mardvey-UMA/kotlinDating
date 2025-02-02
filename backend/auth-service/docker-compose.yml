@@ -1,0 +1,54 @@
+services:
+  frontend:
+    build:
+      context: ../frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - authservice
+    networks:
+      - dating-network
+    restart: always
+    user: root
+  authservice:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    networks:
+      - dating-network
+    restart: always
+    user: root
+  postgres:
+    container_name: auth_db
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: auth_db
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - dating-network
+    restart: unless-stopped
+
+  mail-dev:
+    container_name: mail_dev_auth
+    image: maildev/maildev
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+
+networks:
+  dating-network:
+    driver: bridge
+
+volumes:
+  postgres:
+    driver: local

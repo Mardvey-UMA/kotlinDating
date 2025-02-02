@@ -1,0 +1,9 @@
+rootProject.name = 'backend'
+
+includeBuild 'eureka-server'
+
+includeBuild 'api-gateway'
+
+includeBuild 'auth-service'
+
+includeBuild 'user-service'

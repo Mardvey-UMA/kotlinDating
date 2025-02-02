@@ -1,0 +1,72 @@
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### Kotlin ###
+.kotlin
+# Исключить каталоги с артефактами
+/build/
+
+# Исключить .class файлы
+*.class
+
+# Исключить файлы настроек IDE
+.idea/
+*.vscode/
+
+# Исключить системные файлы
+.DS_Store
+Thumbs.db
+
+# Исключить файлы OS
+*.log
+
+# Исключить локальные файлы Gradle
+#.gradle/
+#gradle/wrapper/
+
+# Исключить файлы настроек OS
+*.swp
+*.tmp
+
+# Исключить файлы, генерируемые сборкой
+*.jar
+*.war
+*.ear
+
+# Исключить файлы Gradle
+#gradlew
+#gradlew.bat

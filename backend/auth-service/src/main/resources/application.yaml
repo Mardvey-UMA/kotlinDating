@@ -1,0 +1,88 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: auth-service
+  public-urls:
+    - "/api/auth/**"
+    - "/api/password/**"
+    - "/api/token/**"
+    - "/api/activate-account"
+    - "/v3/api-docs/**"
+    - "/swagger-ui.html"
+    - "/swagger-ui/**"
+    - "/swagger-resources/**"
+    - "/webjars/**"
+    - "/v2/api-docs"
+    - "/v2/api-docs/**"
+    - "/webjars/swagger-ui/**"
+    - "/v3/api-docs"
+    - "/swagger-ui/index.html"
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    #url: jdbc:postgresql://auth_db/auth_db
+    url: jdbc:postgresql://auth_db/auth_db
+    username: postgres
+    password: postgres
+  jpa:
+      hibernate:
+        ddl-auto: create
+      show-sql: true
+      properties:
+        hibernate:
+          format_sql: true
+      database: postgresql
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "doedcompany@gmail.com"
+    password: "{}"
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+        connection timeout: 5000
+        timeout: 3000
+        write timeout: 5000
+    test-connection: true
+  security:
+    jwt:
+      secret-key: 4NsXDZsWheo+OGCrEtdsZ/av3Ndj2LDB4SNzFPPkdSg=
+      expiration: 3600
+      refresh-expiration: 604800
+    oauth2:
+      client:
+        registration:
+          vk:
+            client-name: vk
+            client-id: 52916407
+            client-secret: pDQj5xjxpfyxwYiqpXwV
+            redirect-uri: http://localhost/api/auth/login/oauth2/code/vk
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            scope:
+              - email
+              - profile
+            provider: vk
+        provider:
+          vk:
+            authorization-uri: https://oauth.vk.com/authorize
+            token-uri: https://oauth.vk.com/access_token
+            user-info-uri: https://api.vk.com/method/users.get?v=199
+            user-name-attribute: response
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
+
+mailing:
+  activation-url: http://localhost:4200/activate-accout
+  email-address-sender: "contact@gmail.com"
+  activation-token-expiration: 3600
