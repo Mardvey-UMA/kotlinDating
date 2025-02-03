@@ -27,7 +27,10 @@ class AuthenticationServiceImpl(
 ) : AuthenticationService {
 
     override fun authenticate(request: AuthRequestDTO, response: HttpServletResponse): AuthResponseDTO {
-        if ((request.username.isNullOrBlank() && request.email.isNullOrBlank()) ||
+
+        // TODO Исправить на identifier чтобы проверял это email или username
+
+        /*if ((request.username.isNullOrBlank() && request.email.isNullOrBlank()) ||
             (!request.username.isNullOrBlank() && !request.email.isNullOrBlank())
         ) {
             throw UsernameNotFoundException("Either username or email must be provided, but not both")
@@ -43,7 +46,7 @@ class AuthenticationServiceImpl(
 
         if (!userEntity.enabled) {
             throw UsernameNotFoundException("User account is not activated")
-        }
+        }*/
 
         val auth = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(

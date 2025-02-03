@@ -1,4 +1,4 @@
-FROM gradle:8.10-jdk17 as builder
+FROM gradle:8.10-jdk17 AS builder
 
 # Установка пользовательского каталога для кэша Gradle
 ENV GRADLE_USER_HOME=/opt/gradle/caches

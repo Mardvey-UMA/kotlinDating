@@ -22,11 +22,8 @@ public class User {
     private String username;
     private String password;
     private String email;
-    //private UserRole role;
-    //private String firstName;
-    //private String lastName;
     private Long vkId;
-    private Provider provider;
+
     private boolean enabled;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

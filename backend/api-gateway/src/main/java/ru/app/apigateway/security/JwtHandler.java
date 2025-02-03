@@ -1,5 +1,7 @@
 package ru.app.apigateway.security;
 
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import ru.app.apigateway.enums.TokenType;
 import ru.app.apigateway.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import javax.crypto.SecretKey;
 import java.util.Base64;
 
 @Component
@@ -27,10 +30,14 @@ public class JwtHandler {
     }
 
     public Claims getClaimsFromToken(String token, TokenType requiredTokenType) {
+
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        SecretKey key = Keys.hmacShaKeyFor(keyBytes);
         Claims claims = Jwts.parser()
-                .setSigningKey(Base64.getEncoder().encodeToString(secret.getBytes()))
-                .parseClaimsJws(token)
-                .getBody();
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
 
         String tokenType = claims.get("token_type", String.class);
         if (tokenType == null || !TokenType.valueOf(tokenType).equals(requiredTokenType)) {
