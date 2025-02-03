@@ -34,10 +34,12 @@ spring:
           format_sql: true
       database: postgresql
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: "doedcompany@gmail.com"
-    password: "23230323kotlin"
+    host: smtp.yandex.ru
+    port: 465
+    username: "doedating@yandex.ru"
+    password: "mrzvlstuwsgocmue"
+    test-connection: true
+    protocol: smtps
     properties:
       mail:
         smtp:
@@ -48,10 +50,9 @@ spring:
         connection timeout: 5000
         timeout: 3000
         write timeout: 5000
-    test-connection: true
   security:
     jwt:
-      secret-key: 4NsXDZsWheo+OGCrEtdsZ/av3Ndj2LDB4SNzFPPkdSg=
+      secret-key: b5f59337a612a2a7dc07328f3e7d1a04722967c7f06df20a499a7d3f91ff2a7e
       expiration: 3600
       refresh-expiration: 604800
     oauth2:
@@ -84,5 +85,5 @@ eureka:
 
 mailing:
   activation-url: http://localhost:4200/activate-accout
-  email-address-sender: "doedcompany@gmail.com"
+  email-address-sender: "doedating@yandex.ru"
   activation-token-expiration: 3600

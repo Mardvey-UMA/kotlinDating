@@ -7,5 +7,4 @@ import reactor.core.publisher.Mono;
 @Service
 public interface UserService {
     Mono<User> getById(Long id);
-    Mono<User> getByUsername(String username);
 }

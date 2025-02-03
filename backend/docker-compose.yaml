@@ -10,7 +10,6 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      #- ./doedating/auth-service:/docker-entrypoint-initdb.d
       - pg_auth:/var/lib/postgresql/data
     networks:
       - doedating-network
@@ -20,19 +19,10 @@ services:
     build: ./eureka-server
     ports:
       - "8761:8761"
-#    depends_on:
-#      - users_db
-#    links:
-#      - users_db
     environment:
       SERVER_PORT: "8761"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-server:8761/eureka/"
       JWT_SECRET: "4NsXDZsWheo+OGCrEtdsZ/av3Ndj2LDB4SNzFPPkdSg="
-#      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_VK_CLIENTID:
-#      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_VK_CLIENTSECRET:
-#      SPRING_R2DBC_URL: "r2dbc:postgresql://users_db/users_db"
-#      SPRING_R2DBC_USERNAME: "postgres"
-#      SPRING_R2DBC_PASSWORD: "postgres"
     networks:
       - doedating-network
   # микросервис входа
@@ -50,6 +40,9 @@ services:
       JWT_SECRET: "b5f59337a612a2a7dc07328f3e7d1a04722967c7f06df20a499a7d3f91ff2a7e"
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_VK_CLIENTID: "52916407"
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_VK_CLIENTSECRET: "pDQj5xjxpfyxwYiqpXwV"
+      SPRING_JDBC_URL: "jdbc:postgresql://auth_db/auth_db"
+      SPRING_JDBC_USERNAME: "postgres"
+      SPRING_JDBC_PASSWORD: "postgres"
     networks:
       - doedating-network
   api-gateway:

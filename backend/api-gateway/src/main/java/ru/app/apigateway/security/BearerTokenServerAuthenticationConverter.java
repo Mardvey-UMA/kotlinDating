@@ -29,8 +29,8 @@ public class BearerTokenServerAuthenticationConverter implements ServerAuthentic
                     if (auth != null) {
                         exchange.getResponse().getHeaders().set("X-User-Name",
                                 String.valueOf(((CustomPrincipal) auth.getPrincipal()).getName()));
-//                        exchange.getResponse().getHeaders().set("X-User-ID",
-//                                String.valueOf(((CustomPrincipal) auth.getPrincipal()).getId()));
+                        exchange.getResponse().getHeaders().set("X-User-ID",
+                                String.valueOf(((CustomPrincipal) auth.getPrincipal()).getId()));
                         return Mono.just(auth); // Cast to Authentication
                     } else {
                         return Mono.error(new RuntimeException("Invalid authentication type"));

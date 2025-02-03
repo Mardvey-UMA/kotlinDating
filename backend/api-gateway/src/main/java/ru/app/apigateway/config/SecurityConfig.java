@@ -49,11 +49,11 @@ public class SecurityConfig {
             "/api/auth/login/**",
             "/swagger-ui.html",
             "/webjars/swagger-ui/**",
-            "/v3/api-docs/**",
-            "/swagger-resources/**",
-            "/v3/api-docs",
-            "/swagger-ui/index.html",
-            "/swagger-ui/**"
+            "/v3/api-docs/**", // OpenAPI docs
+            "/swagger-resources/**", // Swagger resources
+            "/v3/api-docs", // OpenAPI docs endpoint
+            "/swagger-ui/index.html", // Swagger UI main page
+            "/swagger-ui/**" // Swagger UI assets
     };
 
     @Bean

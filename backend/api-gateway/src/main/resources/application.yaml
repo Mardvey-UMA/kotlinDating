@@ -42,7 +42,7 @@ spring:
     password: postgres
 
 jwt:
-  secret: 4NsXDZsWheo+OGCrEtdsZ/av3Ndj2LDB4SNzFPPkdSg=
+  secret: b5f59337a612a2a7dc07328f3e7d1a04722967c7f06df20a499a7d3f91ff2a7e
 
 eureka:
   client:
@@ -50,6 +50,7 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://eureka-server:8761/eureka/
+
 
 springdoc:
   api-docs:

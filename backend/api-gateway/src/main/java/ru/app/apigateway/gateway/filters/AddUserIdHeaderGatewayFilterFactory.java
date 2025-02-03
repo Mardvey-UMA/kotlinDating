@@ -21,13 +21,13 @@ public class AddUserIdHeaderGatewayFilterFactory implements GlobalFilter {
                         .build();
             }
 
-//        String idHeader = exchange.getResponse().getHeaders().getFirst("X-User-ID");
-//        log.info("X-User-ID: {}", idHeader);
-//        if (idHeader != null) {
-//            exchange.getRequest().mutate()
-//                    .header("X-User-ID", idHeader)
-//                    .build();
-//        }
+        String idHeader = exchange.getResponse().getHeaders().getFirst("X-User-ID");
+        log.info("X-User-ID: {}", idHeader);
+        if (idHeader != null) {
+            exchange.getRequest().mutate()
+                    .header("X-User-ID", idHeader)
+                    .build();
+        }
             return chain.filter(exchange);
         }
 }

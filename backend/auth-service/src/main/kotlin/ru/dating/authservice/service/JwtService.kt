@@ -8,6 +8,7 @@ import jakarta.servlet.http.Cookie
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import ru.dating.authservice.config.JwtConfig
+import ru.dating.authservice.entity.User
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -41,15 +42,12 @@ class JwtService(private val jwtConfig: JwtConfig) {
         userDetails: UserDetails,
         jwtExpiration: Long
     ): String {
-        val authorities = userDetails.authorities.toList()
         val now = Instant.now()
-
         return Jwts.builder()
             .claims(extraClaims)
             .subject(userDetails.username)
             .issuedAt(Date.from(now))
             .expiration(Date.from(now.plusSeconds(jwtExpiration)))
-            .claim("authorities", authorities)
             .signWith(getSignInKey())
             .compact()
     }
@@ -74,7 +72,14 @@ class JwtService(private val jwtConfig: JwtConfig) {
     fun extractExpiration(token: String): Date = extractClaim(token, Claims::getExpiration)
 
     fun generateAccessToken(user: UserDetails): String {
-        val claims = mapOf("roles" to user.authorities.map { it.authority })
+        val userEntity = user as User
+        val claims = mapOf<String, Any>(
+            "roles" to user.authorities.map { it.authority },
+            "token_type" to "ACCESS",
+            "username" to userEntity.username,
+            "user_id" to userEntity.id!!,
+            "sub" to userEntity.username
+        )
         return buildToken(claims, user, jwtConfig.expiration)
     }
 

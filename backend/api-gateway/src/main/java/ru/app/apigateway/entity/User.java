@@ -15,29 +15,19 @@ import java.time.LocalDateTime;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("_users")
+@Table("_user")
 public class User {
     @Id
     private Long id;
-
     private String username;
-
-    private String email;
-
     private String password;
-
-    //private UserRole role; // ?
-
+    private String email;
+    //private UserRole role;
+    //private String firstName;
+    //private String lastName;
     private Long vkId;
-
     private Provider provider;
-
-    private boolean accountLocked;
-
     private boolean enabled;
-
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
-
 }
