@@ -28,25 +28,12 @@ class AuthenticationServiceImpl(
 
     override fun authenticate(request: AuthRequestDTO, response: HttpServletResponse): AuthResponseDTO {
 
-        // TODO Исправить на identifier чтобы проверял это email или username
-
-        /*if ((request.username.isNullOrBlank() && request.email.isNullOrBlank()) ||
-            (!request.username.isNullOrBlank() && !request.email.isNullOrBlank())
-        ) {
-            throw UsernameNotFoundException("Either username or email must be provided, but not both")
-        }
-
-        val userEntity: User = if (!request.username.isNullOrBlank()) {
-            userService.findByUsername(request.username!!)
-                ?: throw UsernameNotFoundException("User with username ${request.username} not found")
+        val identifier: String = request.indentifier
+        val userEntity: User = if (identifier.contains("@")) {
+            userService.findByEmail(identifier)
         } else {
-            userService.findByEmail(request.email!!)
-                ?: throw UsernameNotFoundException("User with email ${request.email} not found")
-        }
-
-        if (!userEntity.enabled) {
-            throw UsernameNotFoundException("User account is not activated")
-        }*/
+            userService.findByUsername(identifier)
+        } ?: throw UsernameNotFoundException("User with identifier '$identifier' not found")
 
         val auth = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(

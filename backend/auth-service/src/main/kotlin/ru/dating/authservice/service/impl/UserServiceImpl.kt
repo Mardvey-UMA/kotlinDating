@@ -49,7 +49,8 @@ class UserServiceImpl(
             roles = mutableSetOf(userRole),
             vkId = null,
             provider = Provider.PASSWORD,
-            createdAt = LocalDateTime.now()
+            createdAt = LocalDateTime.now(),
+            updatedAt = LocalDateTime.now(),
         )
         return userRepository.save(user)
     }
@@ -67,13 +68,14 @@ class UserServiceImpl(
         val user = User(
             email = email,
             username = userRequest.username,
-            password = passwordEncoder.encode("MOKE"),
             provider = Provider.VK,
             enabled = true, // VK по умолчанию активированы
             accountLocked = false,
             roles = mutableSetOf(userRole),
             vkId = vkId,
-            createdAt = LocalDateTime.now()
+            createdAt = LocalDateTime.now(),
+            updatedAt = LocalDateTime.now(),
+            password = null.toString()
         )
         userRepository.save(user)
 
@@ -94,6 +96,9 @@ class UserServiceImpl(
     }
 
     override fun updatePassword(user: User, newPassword: String) {
+        if (user.provider != Provider.PASSWORD) {
+            throw IllegalStateException("VK User does not have a password")
+        }
         user.password = passwordEncoder.encode(newPassword)
         userRepository.save(user)
     }

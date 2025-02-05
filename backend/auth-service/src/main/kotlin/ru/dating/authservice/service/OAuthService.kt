@@ -52,9 +52,6 @@ class OAuthService(
         val refreshToken: String = jwtService.generateRefreshToken(user)
         val accessToken: String = jwtService.generateAccessToken(user)
 
-        /*
-        TODO(Вместо магических строк сделать константы для access и resfresh token
-        */
         // Кидаем в кукисы
         response.addCookie(jwtService.createHttpOnlyCookie(CookieName.ACCESS_TOKEN.name, accessToken))
         response.addCookie(jwtService.createHttpOnlyCookie(CookieName.REFRESH_TOKEN.name, refreshToken))
@@ -116,23 +113,11 @@ class OAuthService(
     private fun createNewUser(vkId: Long, email: String?): User {
         val userEmail = email ?: "${vkId}@vk.com"
 
-        val newUser = User(
-            email = userEmail,
-            username = userEmail,
-            password = "MOKE",
-            provider = Provider.VK,
-            enabled = true,
-            accountLocked = false,
-            vkId = vkId,
-            roles = mutableSetOf(),
-            createdAt = LocalDateTime.now()
-        )
-
         return userService.registerVkUser(
             UserRequestDTO(
-                username = userEmail,
+                username = vkId.toString(),
                 email = userEmail,
-                password = "MOKE"
+                password = null
             ),
             vkId
         )

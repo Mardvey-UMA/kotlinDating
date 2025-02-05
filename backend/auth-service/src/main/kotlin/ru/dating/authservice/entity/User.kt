@@ -24,7 +24,7 @@ class User(
     @Column(nullable = false, unique = true)
     private var username: String,
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private var password: String,
 
     // Используется LAZY чтобы не было N + 1
@@ -47,7 +47,7 @@ class User(
     private var createdAt: LocalDateTime? = null,
 
     @LastModifiedDate
-    @Column(name = "updated_at", insertable = false)
+    @Column(name = "updated_at")
     private var updatedAt: LocalDateTime? = null
 
 ) : UserDetails, Principal{

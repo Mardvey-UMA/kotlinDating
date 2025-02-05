@@ -21,8 +21,5 @@ data class UserRequestDTO(
     @field:NotBlank(message = "email cannot has blank")
     var email: String,
 
-    @field:NotEmpty(message = "password cannot be empty")
-    @field:NotBlank(message = "password cannot has blank")
-    @field:Size(min = 4, message = "password should be 4 chars long minimum")
-    var password: String
+    var password: String?
 )

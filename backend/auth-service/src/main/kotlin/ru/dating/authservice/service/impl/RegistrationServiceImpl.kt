@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service
 import ru.dating.authservice.dto.UserRequestDTO
 import ru.dating.authservice.dto.UserResponseDTO
 import ru.dating.authservice.entity.User
+import ru.dating.authservice.enums.Provider
 import ru.dating.authservice.service.interfaces.ActivationService
 import ru.dating.authservice.service.interfaces.RegistrationService
 import ru.dating.authservice.service.interfaces.UserService
@@ -16,19 +17,26 @@ class RegistrationServiceImpl(
 ) : RegistrationService {
 
     override fun register(request: UserRequestDTO): UserResponseDTO {
-        val user: User = userService.registerUser(
+
+        val rawPassword = request.password ?: throw IllegalArgumentException("Password is required")
+
+        val user = userService.registerUser(
             email = request.email,
             username = request.username,
-            rawPassword = request.password
+            rawPassword = rawPassword
         )
-        val activationToken: String = activationService.generateAndSaveActivationToken(user)
+
+        val activationToken = activationService.generateAndSaveActivationToken(user)
+
         activationService.sendActivationEmail(user, activationToken)
 
         return UserResponseDTO(
             role = user.roles,
             provider = user.provider,
             enabled = user.enabled,
-            createdAt = LocalDateTime.now()
+            createdAt = LocalDateTime.now(),
+            updatedAt = LocalDateTime.now()
         )
     }
+
 }
