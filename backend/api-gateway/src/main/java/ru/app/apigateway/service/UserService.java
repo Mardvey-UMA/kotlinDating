@@ -8,4 +8,5 @@ import reactor.core.publisher.Mono;
 public interface UserService {
     Mono<User> getById(Long id);
     Mono<User> getByEmail(String email);
+    Mono<User> getByUsername(String username);
 }

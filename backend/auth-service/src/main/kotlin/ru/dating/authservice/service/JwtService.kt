@@ -92,18 +92,7 @@ class JwtService(private val jwtConfig: JwtConfig) {
         return claims["type"] == "refresh" && !isTokenExpired(token)
     }
 
-/////////////////////////////////////////////
-    fun extractIssuedAt(token: String): LocalDateTime? {
-        return try {
-            val claims = extractAllClaims(token)
-            claims.issuedAt.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime()
-        } catch (e: Exception) {
-            null
-        }
-    }
-
+    /////////////////////////////////////////////
     fun extractExpirationLocalDateTime(token: String): LocalDateTime? {
         return try {
             val expirationDate = extractExpiration(token)
@@ -114,7 +103,4 @@ class JwtService(private val jwtConfig: JwtConfig) {
             null
         }
     }
-
-
-
 }

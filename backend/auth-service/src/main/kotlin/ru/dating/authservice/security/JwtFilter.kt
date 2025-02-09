@@ -37,16 +37,16 @@ class JwtFilter(
             return
         }
         val jwt = authHeader.substring("Bearer ".length)
-        val userEmail = jwtService.extractUsername(jwt)
+        val username = jwtService.extractUsername(jwt)
 
         // Добавлена проверка что token живет и что не исключен
         val token = tokenRepository.findByToken(jwt)
         val isTokenValid = token?.let { !it.expired && !it.revoked } ?: false
 
-        if (userEmail != null &&
+        if (username != null &&
             SecurityContextHolder.getContext().authentication == null) {
 
-            val userDetails: UserDetails = userDetailsService.loadUserByUsername(userEmail)
+            val userDetails: UserDetails = userDetailsService.loadUserByUsername(username)
             if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
                 val authToken = UsernamePasswordAuthenticationToken(
                 userDetails,
@@ -59,4 +59,5 @@ class JwtFilter(
         }
         filterChain.doFilter(request, response)
     }
+
 }

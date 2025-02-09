@@ -14,6 +14,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    public Mono<User> getByUsername(String username) {return userRepository.findByUsername(username);}
+
+    @Override
     public Mono<User> getById(Long id) {
         return userRepository.findById(id);
     }

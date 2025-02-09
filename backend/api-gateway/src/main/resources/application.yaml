@@ -21,11 +21,18 @@ spring:
           uri: lb://auth-service
           predicates:
             - Path=/api/auth/**
-            - Method=GET, POST, PUT, PATCH, DELETE
+            - Method=GET, POST
+
         - id: user-service
           uri: lb://user-service
           predicates:
-            - Path=/api/users, /api/users/**, /api/likes/**, /api/likes, /api/matches/**, /api/matches, /api/recommendation, /api/recommendation/**
+            - Path=/api/users, /api/users/**
+            - Method=GET, POST, PUT, PATCH, DELETE
+
+        - id: photo-service
+          uri: lb://photo-service
+          predicates:
+            - Path=/api/photos, /api/photos/**
             - Method=GET, POST, PUT, PATCH, DELETE
 
         - id: openapi
